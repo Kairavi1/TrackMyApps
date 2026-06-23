@@ -1,3 +1,4 @@
+import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -9,7 +10,17 @@ export default function Home() {
         Your production-grade job application tracker
       </p>
 
-      <Button>Start Tracking</Button>
+      <form
+        action={async () => {
+          "use server";
+
+          await signIn("google", {
+            redirectTo: "/dashboard",
+          });
+        }}
+      >
+        <Button>Start Tracking</Button>
+      </form>
     </main>
   );
 }

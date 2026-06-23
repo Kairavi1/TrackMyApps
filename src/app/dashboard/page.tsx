@@ -2,8 +2,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import AddApplication from "@/components/AddApplication";
-import ApplicationCard from "@/components/ApplicationCard";
 import DashboardClient from "@/components/DashboardClient";
+import Header from "@/components/Header";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -34,7 +34,8 @@ export default async function Dashboard() {
   };
 
   return (
-    <main className="p-10">
+    <main className="min-h-screen p-10 bg-[rgb(250,249,245)]">
+      <Header />
       <h1 className="text-3xl font-bold">TrackMyApps Dashboard</h1>
 
       <p className="mt-2">Welcome {session.user.name}</p>
