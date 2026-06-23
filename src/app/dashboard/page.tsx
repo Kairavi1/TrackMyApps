@@ -1,6 +1,9 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import AddApplication from "@/components/AddApplication";
+import ApplicationCard from "@/components/ApplicationCard";
+import DashboardClient from "@/components/DashboardClient";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -18,11 +21,52 @@ export default async function Dashboard() {
     },
   });
 
+  const stats = {
+    total: applications.length,
+
+    applied: applications.filter((app) => app.status === "APPLIED").length,
+
+    interviews: applications.filter((app) => app.status === "INTERVIEW").length,
+
+    offers: applications.filter((app) => app.status === "OFFER").length,
+
+    rejected: applications.filter((app) => app.status === "REJECTED").length,
+  };
+
   return (
     <main className="p-10">
       <h1 className="text-3xl font-bold">TrackMyApps Dashboard</h1>
 
       <p className="mt-2">Welcome {session.user.name}</p>
+
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8">
+        <div className="border rounded-xl p-5">
+          <h3 className="text-sm text-gray-500">Total</h3>
+          <p className="text-3xl font-bold">{stats.total}</p>
+        </div>
+
+        <div className="border rounded-xl p-5">
+          <h3 className="text-sm text-gray-500">Applied</h3>
+          <p className="text-3xl font-bold">{stats.applied}</p>
+        </div>
+
+        <div className="border rounded-xl p-5">
+          <h3 className="text-sm text-gray-500">Interviews</h3>
+          <p className="text-3xl font-bold">{stats.interviews}</p>
+        </div>
+
+        <div className="border rounded-xl p-5">
+          <h3 className="text-sm text-gray-500">Offers</h3>
+          <p className="text-3xl font-bold">{stats.offers}</p>
+        </div>
+
+        <div className="border rounded-xl p-5">
+          <h3 className="text-sm text-gray-500">Rejected</h3>
+          <p className="text-3xl font-bold">{stats.rejected}</p>
+        </div>
+      </div>
+
+      <AddApplication />
 
       <div className="mt-8">
         <h2 className="text-xl font-semibold">Your Applications</h2>
@@ -31,23 +75,7 @@ export default async function Dashboard() {
           <p className="mt-4 text-gray-500">No applications yet.</p>
         ) : (
           <div className="mt-4 grid gap-4">
-            {applications.map((app) => (
-              <div key={app.id} className="border rounded-xl p-5">
-                <h3 className="text-lg font-bold">{app.company}</h3>
-
-                <p>{app.role}</p>
-
-                <p className="mt-2 text-sm">
-                  Status: <span className="font-semibold">{app.status}</span>
-                </p>
-
-                {app.link && (
-                  <a href={app.link} target="_blank" className="text-blue-500">
-                    Job Link
-                  </a>
-                )}
-              </div>
-            ))}
+            <DashboardClient applications={applications} />
           </div>
         )}
       </div>
