@@ -6,13 +6,15 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
-  id        String @id @default(uuid())
 
-  email     String @unique
-  name      String?
-  image     String?
+  id String @id @default(uuid())
+
+  email String @unique
+  name String?
+  image String?
+
+  emailVerified DateTime?
 
   accounts Account[]
   sessions Session[]
@@ -21,16 +23,16 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
+}
 
 model JobApplication {
   id String @id @default(uuid())
 
   company String
-  role String
+  role    String
 
-  jobUrl String?
+  link String?
 
   salaryMin Int?
   salaryMax Int?
@@ -39,18 +41,18 @@ model JobApplication {
 
   status ApplicationStatus @default(APPLIED)
 
-  userId String
-  user User @relation(fields: [userId], references: [id])
-
-  history ApplicationHistory[]
+  appliedAt DateTime @default(now())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  history ApplicationHistory[]
 }
 
-
 model ApplicationHistory {
-
   id String @id @default(uuid())
 
   oldStage ApplicationStatus
@@ -58,14 +60,12 @@ model ApplicationHistory {
 
   applicationId String
 
-  application JobApplication @relation(fields: [applicationId], references: [id])
+  application JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   changedAt DateTime @default(now())
 }
 
-
 enum ApplicationStatus {
-
   APPLIED
 
   PHONE_SCREEN
@@ -75,12 +75,13 @@ enum ApplicationStatus {
   OFFER
 
   REJECTED
-
 }
 
 model Account {
-  id                String  @id @default(uuid())
-  userId            String
+  id String @id @default(uuid())
+
+  userId String
+
   type              String
   provider          String
   providerAccountId String
@@ -98,22 +99,24 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-
 model Session {
-  id           String   @id @default(uuid())
-  sessionToken String   @unique
-  userId       String
+  id String @id @default(uuid())
+
+  sessionToken String @unique
+
+  userId String
 
   expires DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
 model VerificationToken {
   identifier String
-  token      String   @unique
-  expires    DateTime
+
+  token String @unique
+
+  expires DateTime
 
   @@unique([identifier, token])
 }
