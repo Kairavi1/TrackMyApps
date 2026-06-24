@@ -20,7 +20,7 @@ export default async function Header() {
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard/board"
-              className="flex items-center gap-2 text-xl font-medium text-[#3d3d3a] hover:bg-[#faf9f5] px-4 py-2 rounded-lg transition"
+              className="flex items-center gap-3 text-xl font-medium text-[#3d3d3a] hover:bg-[#faf9f5] px-4 py-2 rounded-lg transition"
             >
               <LayoutDashboard size={18} strokeWidth={3} />
               Board
@@ -28,14 +28,14 @@ export default async function Header() {
 
             <Link
               href="/dashboard/analytics"
-              className="flex items-center gap-2 text-xl font-medium text-[#3d3d3a] hover:bg-[#faf9f5] px-4 py-2 rounded-lg transition"
+              className="flex items-center gap-3 text-xl font-medium text-[#3d3d3a] hover:bg-[#faf9f5] px-4 py-2 rounded-lg transition"
             >
               <ChartBarBig size={18} strokeWidth={3} />
               Analytics
             </Link>
           </div>
 
-          <div className="h-8 w-px bg-gray-400" />
+          <div className="h-10 w-[1.5px] bg-[#3d3d3a]/20 rounded-full" />
 
           <div className="flex items-center gap-3">
             {session?.user?.image && (

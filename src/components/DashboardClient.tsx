@@ -28,7 +28,7 @@ export default function DashboardClient({ applications }: any) {
         setStatus={setStatus}
       />
 
-      <div className="mt-4 grid gap-4">
+      <div className="mt-2 grid gap-4">
         {filtered.length === 0 ? (
           <p className="text-gray-500">No applications found</p>
         ) : (
