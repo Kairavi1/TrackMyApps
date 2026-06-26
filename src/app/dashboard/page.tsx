@@ -5,6 +5,7 @@ import DashboardClient from "@/components/DashboardClient";
 import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
 import AddApplicationButton from "@/components/AddApplicationButton";
+import BoardColumn from "@/components/BoardColumn";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -33,6 +34,18 @@ export default async function Dashboard() {
 
     rejected: applications.filter((app) => app.status === "REJECTED").length,
   };
+
+  const applied = applications.filter((app) => app.status === "APPLIED");
+
+  const phoneScreen = applications.filter(
+    (app) => app.status === "PHONE_SCREEN",
+  );
+
+  const interview = applications.filter((app) => app.status === "INTERVIEW");
+
+  const offer = applications.filter((app) => app.status === "OFFER");
+
+  const rejected = applications.filter((app) => app.status === "REJECTED");
 
   return (
     <main className="min-h-screen p-10 bg-[rgb(250,249,245)]">
@@ -69,14 +82,18 @@ export default async function Dashboard() {
         />
       </div>
 
-      <div className="mt-2">
-        {applications.length === 0 ? (
-          <p className="mt-2 text-gray-500">No applications yet.</p>
-        ) : (
-          <div className="mt-2 grid gap-4">
-            <DashboardClient applications={applications} />
-          </div>
-        )}
+      <div className="mt-10">
+        <div className="grid grid-cols-5 gap-6 mt-8">
+          <BoardColumn title="Applied" applications={applied} />
+
+          <BoardColumn title="Phone Screen" applications={phoneScreen} />
+
+          <BoardColumn title="Interview" applications={interview} />
+
+          <BoardColumn title="Offer" applications={offer} />
+
+          <BoardColumn title="Rejected" applications={rejected} />
+        </div>
       </div>
     </main>
   );
