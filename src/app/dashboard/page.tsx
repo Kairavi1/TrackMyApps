@@ -1,11 +1,10 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import DashboardClient from "@/components/DashboardClient";
 import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
-import AddApplicationButton from "@/components/AddApplicationButton";
-import BoardColumn from "@/components/BoardColumn";
+import AddApplicationButton from "@/components/application/AddApplicationButton";
+import BoardClient from "@/components/board/BoardClient";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -83,17 +82,13 @@ export default async function Dashboard() {
       </div>
 
       <div className="mt-10">
-        <div className="grid grid-cols-5 gap-6 mt-8">
-          <BoardColumn title="Applied" applications={applied} />
-
-          <BoardColumn title="Phone Screen" applications={phoneScreen} />
-
-          <BoardColumn title="Interview" applications={interview} />
-
-          <BoardColumn title="Offer" applications={offer} />
-
-          <BoardColumn title="Rejected" applications={rejected} />
-        </div>
+        <BoardClient
+          applied={applied}
+          phoneScreen={phoneScreen}
+          interview={interview}
+          offer={offer}
+          rejected={rejected}
+        />
       </div>
     </main>
   );

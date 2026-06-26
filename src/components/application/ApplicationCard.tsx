@@ -1,7 +1,7 @@
 "use client";
 
 import { ApplicationStatus } from "@prisma/client";
-import StatusDropdown from "./StatusDropdown";
+import StatusDropdown from "../StatusDropdown";
 
 type ApplicationCardProps = {
   application: {

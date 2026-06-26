@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ApplicationFilters from "./ApplicationFilters";
-import ApplicationCard from "./ApplicationCard";
+import ApplicationCard from "./application/ApplicationCard";
 
 export default function DashboardClient({ applications }: any) {
   const [search, setSearch] = useState("");
