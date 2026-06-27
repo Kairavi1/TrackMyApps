@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import ApplicationFilters from "./ApplicationFilters";
+import ApplicationFilters from "./application/ApplicationFilters";
 import ApplicationCard from "./application/ApplicationCard";
 
 export default function DashboardClient({ applications }: any) {

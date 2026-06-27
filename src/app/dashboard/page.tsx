@@ -17,6 +17,13 @@ export default async function Dashboard() {
     where: {
       userId: session.user.id,
     },
+    include: {
+      history: {
+        orderBy: {
+          changedAt: "desc",
+        },
+      },
+    },
     orderBy: {
       createdAt: "desc",
     },

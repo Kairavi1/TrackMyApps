@@ -12,12 +12,14 @@ type BoardColumnProps = {
   title: string;
   status: string;
   applications: any[];
+  onCardClick: (application: any) => void;
 };
 
 export default function BoardColumn({
   title,
   status,
   applications,
+  onCardClick,
 }: BoardColumnProps) {
   return (
     <div className="flex-1 min-w-[320px]">
@@ -36,23 +38,25 @@ export default function BoardColumn({
         {applications.length > 0 && (
           <div
             className="
-              bg-[#f5f4ed]
-              rounded-3xl
-              p-4
-              min-h-[500px]
-              transition-colors
-              duration-200
-            "
+        bg-[#f5f4ed]
+        rounded-3xl
+        p-4
+        space-y-4
+        transition-colors
+        duration-200
+      "
           >
             <SortableContext
               items={applications.map((app) => app.id)}
               strategy={verticalListSortingStrategy}
             >
-              <div className="space-y-4">
-                {applications.map((app) => (
-                  <SortableCard key={app.id} application={app} />
-                ))}
-              </div>
+              {applications.map((app) => (
+                <SortableCard
+                  key={app.id}
+                  application={app}
+                  onClick={() => onCardClick(app)}
+                />
+              ))}
             </SortableContext>
           </div>
         )}

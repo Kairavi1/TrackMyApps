@@ -2,11 +2,14 @@ import { JobApplication } from "@prisma/client";
 
 export default function BoardCard({
   application,
+  onClick,
 }: {
   application: JobApplication;
+  onClick?: () => void;
 }) {
   return (
     <div
+      onClick={onClick}
       className="
         bg-white
         rounded-3xl
@@ -17,6 +20,7 @@ export default function BoardCard({
         transition
         flex
         flex-col
+        cursor-pointer
       "
     >
       <div>
@@ -29,7 +33,7 @@ export default function BoardCard({
 
       <div className="mt-auto space-y-2">
         {application.salaryMin && application.salaryMax && (
-          <p className="text-md mt-2 font-medium text-[#3d3d3a]">
+          <p className="text-md font-medium text-[#3d3d3a]">
             ₹{application.salaryMin / 1000}k – ₹{application.salaryMax / 1000}k
           </p>
         )}

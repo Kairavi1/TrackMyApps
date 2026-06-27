@@ -4,7 +4,13 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import BoardCard from "./BoardCard";
 
-export default function SortableCard({ application }: { application: any }) {
+export default function SortableCard({
+  application,
+  onClick,
+}: {
+  application: any;
+  onClick?: () => void;
+}) {
   const {
     attributes,
     listeners,
@@ -34,7 +40,7 @@ export default function SortableCard({ application }: { application: any }) {
         active:cursor-grabbing
       "
     >
-      <BoardCard application={application} />
+      <BoardCard application={application} onClick={onClick} />
     </div>
   );
 }

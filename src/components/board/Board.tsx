@@ -14,6 +14,7 @@ import {
 
 import BoardColumn from "./BoardColumn";
 import BoardCard from "./BoardCard";
+import ApplicationDetailsModal from "../application/ApplicationDetailsModal";
 
 type BoardProps = {
   applied: any[];
@@ -47,6 +48,7 @@ export default function Board({
   });
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [selectedApplication, setSelectedApplication] = useState<any>(null);
 
   const activeCard = useMemo(() => {
     if (!activeId) return null;
@@ -60,54 +62,78 @@ export default function Board({
     setActiveId(event.active.id as string);
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     setActiveId(null);
 
     const { active, over } = event;
 
     if (!over) return;
 
-    setColumns((prev) => {
-      const sourceColumn = Object.keys(prev).find((status) =>
-        prev[status as keyof typeof prev].some((card) => card.id === active.id),
-      ) as keyof typeof prev | undefined;
+    const previousColumns = columns;
 
-      if (!sourceColumn) return prev;
-
-      const destinationColumn = Object.keys(prev).find(
-        (status) =>
-          status === over.id ||
-          prev[status as keyof typeof prev].some((card) => card.id === over.id),
-      ) as keyof typeof prev | undefined;
-
-      if (!destinationColumn) return prev;
-
-      if (sourceColumn === destinationColumn) {
-        return prev;
-      }
-
-      const movedCard = prev[sourceColumn].find(
+    const sourceColumn = Object.keys(columns).find((status) =>
+      columns[status as keyof typeof columns].some(
         (card) => card.id === active.id,
-      );
+      ),
+    ) as keyof typeof columns | undefined;
 
-      if (!movedCard) return prev;
+    if (!sourceColumn) return;
 
-      return {
-        ...prev,
-
-        [sourceColumn]: prev[sourceColumn].filter(
-          (card) => card.id !== active.id,
+    const destinationColumn = Object.keys(columns).find(
+      (status) =>
+        status === over.id ||
+        columns[status as keyof typeof columns].some(
+          (card) => card.id === over.id,
         ),
+    ) as keyof typeof columns | undefined;
 
-        [destinationColumn]: [
-          ...prev[destinationColumn],
-          {
-            ...movedCard,
-            status: destinationColumn,
-          },
-        ],
-      };
-    });
+    if (!destinationColumn) return;
+
+    if (sourceColumn === destinationColumn) return;
+
+    const movedCard = columns[sourceColumn].find(
+      (card) => card.id === active.id,
+    );
+
+    if (!movedCard) return;
+
+    // Optimistic UI update
+    const updatedColumns = {
+      ...columns,
+      [sourceColumn]: columns[sourceColumn].filter(
+        (card) => card.id !== active.id,
+      ),
+      [destinationColumn]: [
+        ...columns[destinationColumn],
+        {
+          ...movedCard,
+          status: destinationColumn,
+        },
+      ],
+    };
+
+    setColumns(updatedColumns);
+
+    try {
+      const res = await fetch(`/api/applications/${active.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: destinationColumn,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update");
+      }
+    } catch (error) {
+      console.error(error);
+
+      // Revert if API fails
+      setColumns(previousColumns);
+    }
   }
 
   return (
@@ -123,30 +149,50 @@ export default function Board({
           title="Applied"
           status="APPLIED"
           applications={columns.APPLIED}
+          onCardClick={(app) => {
+            console.log("Selected app:", app);
+            setSelectedApplication(app);
+          }}
         />
 
         <BoardColumn
           title="Phone Screen"
           status="PHONE_SCREEN"
           applications={columns.PHONE_SCREEN}
+          onCardClick={(app) => {
+            console.log("Selected app:", app);
+            setSelectedApplication(app);
+          }}
         />
 
         <BoardColumn
           title="Interview"
           status="INTERVIEW"
           applications={columns.INTERVIEW}
+          onCardClick={(app) => {
+            console.log("Selected app:", app);
+            setSelectedApplication(app);
+          }}
         />
 
         <BoardColumn
           title="Offer"
           status="OFFER"
           applications={columns.OFFER}
+          onCardClick={(app) => {
+            console.log("Selected app:", app);
+            setSelectedApplication(app);
+          }}
         />
 
         <BoardColumn
           title="Rejected"
           status="REJECTED"
           applications={columns.REJECTED}
+          onCardClick={(app) => {
+            console.log("Selected app:", app);
+            setSelectedApplication(app);
+          }}
         />
       </div>
 
@@ -157,6 +203,11 @@ export default function Board({
           </div>
         ) : null}
       </DragOverlay>
+
+      <ApplicationDetailsModal
+        application={selectedApplication}
+        onClose={() => setSelectedApplication(null)}
+      />
     </DndContext>
   );
 }
